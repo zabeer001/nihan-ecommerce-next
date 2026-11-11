@@ -14,7 +14,12 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/dashboard/](http://localhost:3000/dashboard/) with your browser to see the result.
+
+The production URL is [https://dashboard-nihan.glifnode.com/dashboard/](https://dashboard-nihan.glifnode.com/dashboard/).
+Configure the reverse proxy to forward `/dashboard/` and its subpaths to Next.js with the path prefix intact.
+
+The storefront reads active products and variants from Laravel. Set `NIHAN_CATALOG_API_URL` to the Laravel origin reachable from the Next.js server. It defaults to `http://localhost:97` for local development. Laravel's `APP_URL` must point to the browser-accessible Laravel origin so uploaded images load.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
