@@ -1,5 +1,12 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { categoryHref, getCategories } from "./catalog-api";
 import { ThemeToggle } from "./theme-toggle";
+
+async function CategoryLinks() {
+  const categories = await getCategories().catch(() => []);
+  return categories.map(({ id, name }) => <Link key={id} href={categoryHref(id)}>{name}</Link>);
+}
 
 export function Header() {
   return (
@@ -18,8 +25,7 @@ export function Header() {
           </Link>
           <nav aria-label="Main">
             <Link href="/products">Shop</Link>
-            <Link href="/fragrance">Car fragrance</Link>
-            <Link href="/accessories">Accessories</Link>
+            <Suspense><CategoryLinks /></Suspense>
             <Link href="/our-story">Our story</Link>
           </nav>
           <div className="icons">
@@ -59,9 +65,8 @@ export function Footer() {
           </div>
           <div>
             <h4>Shop</h4>
-            <Link href="/accessories">Diffusers</Link>
-            <Link href="/fragrance">Refills</Link>
-            <Link href="/accessories">Accessories</Link>
+            <Link href="/products">All products</Link>
+            <Suspense><CategoryLinks /></Suspense>
           </div>
           <div>
             <h4>Help</h4>

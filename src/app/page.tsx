@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { DiffuserArtwork, ProductGrid, ScentGrid } from "./catalog";
+import { Suspense } from "react";
+import { CategoryCollections, DiffuserArtwork, ScentGrid } from "./catalog";
 
 const features = [
   ["Intensity", "Three levels, set with a single press. It remembers your last choice."],
@@ -71,20 +72,9 @@ export default function Home() {
             <Link className="link" href="/products">Shop all</Link>
           </div>
           <div className="collection-rows" id="collection">
-            <section aria-labelledby="collection-fragrance">
-              <div className="collection-row-heading">
-                <h3 id="collection-fragrance">Fragrance</h3>
-                <Link className="link" href="/fragrance">View all fragrances</Link>
-              </div>
-              <ProductGrid category="fragrance" />
-            </section>
-            <section aria-labelledby="collection-accessories">
-              <div className="collection-row-heading">
-                <h3 id="collection-accessories">Accessories</h3>
-                <Link className="link" href="/accessories">View all accessories</Link>
-              </div>
-              <ProductGrid category="accessories" />
-            </section>
+            <Suspense fallback={<p role="status">Loading categories…</p>}>
+              <CategoryCollections />
+            </Suspense>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { formatPrice, getProducts } from "./catalog-api";
+import { categoryHref, formatPrice, getCategories, getProducts } from "./catalog-api";
 
 const scents = [
   ["Woody", "Oud Noir", "Smoked oud, amber and a trace of leather."],
@@ -60,7 +60,7 @@ export function ArtworkDefinitions() {
 }
 
 type GridProps = {
-  category?: "fragrance" | "accessories";
+  category?: string | number;
   searchParams?: Promise<{ page?: string | string[] }>;
 };
 
@@ -77,6 +77,7 @@ async function CatalogProducts({ category, searchParams }: GridProps) {
   const requestedPage = typeof params?.page === "string" ? Number(params.page) : 1;
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const catalog = await getProducts(category, page).catch(() => null);
+  const categoryQuery = typeof category === "number" ? { category: String(category) } : {};
 
   if (!catalog) return <p role="status">Products are temporarily unavailable.</p>;
 
@@ -99,12 +100,28 @@ async function CatalogProducts({ category, searchParams }: GridProps) {
       ) : <p>No products on this page.</p>}
       {searchParams && (page > 1 || catalog.has_more) && (
         <nav className="catalog-pagination" aria-label="Product pages">
-          {page > 1 && <Link className="link" href={{ query: { page: page - 1 } }}>Previous</Link>}
-          {catalog.has_more && <Link className="link" href={{ query: { page: page + 1 } }}>Next</Link>}
+          {page > 1 && <Link className="link" href={{ query: { ...categoryQuery, page: page - 1 } }}>Previous</Link>}
+          {catalog.has_more && <Link className="link" href={{ query: { ...categoryQuery, page: page + 1 } }}>Next</Link>}
         </nav>
       )}
     </>
   );
+}
+
+export async function CategoryCollections() {
+  const categories = await getCategories().catch(() => null);
+  if (!categories) return <p role="status">Categories are temporarily unavailable.</p>;
+  if (!categories.length) return <p>No categories are available yet.</p>;
+
+  return categories.map(({ id, name }) => (
+    <section key={id} aria-labelledby={`collection-${id}`}>
+      <div className="collection-row-heading">
+        <h3 id={`collection-${id}`}>{name}</h3>
+        <Link className="link" href={categoryHref(id)}>View all <span className="visually-hidden">{name}</span></Link>
+      </div>
+      <ProductGrid category={id} />
+    </section>
+  ));
 }
 
 export function ScentGrid() {

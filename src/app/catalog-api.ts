@@ -1,4 +1,11 @@
 import { connection } from "next/server";
+import { cache } from "react";
+
+export type CatalogCategory = { id: number; name: string };
+
+export function categoryHref(id: number) {
+  return `/products?category=${id}`;
+}
 
 export type ProductPhoto = { id: number; url: string };
 
@@ -34,7 +41,7 @@ export function formatPrice(cents: number) {
 async function requestCatalog(path: string) {
   await connection();
   const origin = process.env.NIHAN_CATALOG_API_URL || "http://localhost:97";
-  const url = new URL(`/api/storefront/products${path}`, origin);
+  const url = new URL(`/api/storefront/${path}`, origin);
   const response = await fetch(url, {
     headers: { Accept: "application/json" },
     cache: "no-store",
@@ -50,11 +57,20 @@ function resolvePhoto(photo: ProductPhoto, base: URL): ProductPhoto {
   return { ...photo, url: new URL(photo.url, base).href };
 }
 
-export async function getProducts(category: string | undefined, page: number): Promise<CatalogPage> {
-  const params = new URLSearchParams({ page: String(page) });
-  if (category) params.set("category", category);
+export const getCategories = cache(async (): Promise<CatalogCategory[]> => {
+  const { response } = await requestCatalog("categories");
+  if (!response.ok) throw new Error("Catalog categories request failed.");
 
-  const { response, url } = await requestCatalog(`?${params}`);
+  const { data }: { data: CatalogCategory[] } = await response.json();
+  return data;
+});
+
+export async function getProducts(category: string | number | undefined, page: number): Promise<CatalogPage> {
+  const params = new URLSearchParams({ page: String(page) });
+  if (typeof category === "number") params.set("category_id", String(category));
+  if (typeof category === "string") params.set("category", category);
+
+  const { response, url } = await requestCatalog(`products?${params}`);
   if (!response.ok) throw new Error("Catalog request failed.");
 
   const result: CatalogPage = await response.json();
@@ -68,7 +84,7 @@ export async function getProducts(category: string | undefined, page: number): P
 }
 
 export async function getProduct(slug: string): Promise<StorefrontProduct | null> {
-  const { response, url } = await requestCatalog(`/${encodeURIComponent(slug)}`);
+  const { response, url } = await requestCatalog(`products/${encodeURIComponent(slug)}`);
   if (response.status === 404) return null;
 
   const { data }: { data: StorefrontProduct } = await response.json();
