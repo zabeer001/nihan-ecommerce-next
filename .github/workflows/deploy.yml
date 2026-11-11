@@ -1,0 +1,71 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-nihan-ecommerce-next
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Install SSH password client
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Build and deploy on production VPS
+        env:
+          VPS_ROOT_ACCESS: ${{ secrets.VPS_ROOT_ACCESS }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          VPS_PROJECT_DIR: ${{ secrets.VPS_PROJECT_DIR }}
+        run: |
+          set -Eeuo pipefail
+
+          SSH_TARGET="${VPS_ROOT_ACCESS#ssh }"
+          : "${SSH_TARGET:?Set the VPS_ROOT_ACCESS secret}"
+          : "${VPS_PASSWORD:?Set the VPS_PASSWORD secret}"
+          : "${VPS_PROJECT_DIR:?Set the VPS_PROJECT_DIR secret}"
+          export SSHPASS="$VPS_PASSWORD"
+          printf -v REMOTE_COMMAND 'bash -se -- %q' "$VPS_PROJECT_DIR"
+
+          sshpass -e ssh \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=15 \
+            -- "$SSH_TARGET" "$REMOTE_COMMAND" <<'REMOTE_SCRIPT'
+          set -Eeuo pipefail
+
+          cd "$1"
+
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "The VPS repository has uncommitted changes. Deployment stopped." >&2
+            git status --short >&2
+            exit 1
+          fi
+
+          git checkout main
+          git pull --ff-only origin main
+
+          if [ ! -f .env ]; then
+            echo "Production .env is missing in $PWD" >&2
+            exit 1
+          fi
+
+          docker compose build nihan-web
+
+          if ! docker compose up -d --no-build --force-recreate --wait --wait-timeout 90 nihan-web; then
+            docker compose logs --tail 100 nihan-web >&2
+            exit 1
+          fi
+
+          docker compose ps nihan-web
+          REMOTE_SCRIPT

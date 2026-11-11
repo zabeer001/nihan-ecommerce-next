@@ -1,0 +1,15 @@
+.agents
+.aws
+.codex
+.env*
+.git
+.github
+.next
+.vercel
+bash
+coverage
+node_modules
+out
+*.pem
+*.tsbuildinfo
+npm-debug.log*
