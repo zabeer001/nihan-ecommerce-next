@@ -2,8 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  basePath: "/dashboard",
   trailingSlash: true,
+  async redirects() {
+    return [
+      {
+        source: "/dashboard/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
+    ];
+  },
   experimental: {
     agentFeedback: true,
   },

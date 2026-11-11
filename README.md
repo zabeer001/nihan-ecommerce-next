@@ -14,10 +14,9 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000/dashboard/](http://localhost:3000/dashboard/) with your browser to see the result.
+Open [http://localhost:3000/](http://localhost:3000/) with your browser to see the result.
 
-The production URL is [https://dashboard-nihan.glifnode.com/dashboard/](https://dashboard-nihan.glifnode.com/dashboard/).
-Configure the reverse proxy to forward `/dashboard/` and its subpaths to Next.js with the path prefix intact.
+The storefront is at [https://nihan.glifnode.com/](https://nihan.glifnode.com/). Existing storefront links under `/dashboard/` redirect to the corresponding root paths.
 
 The storefront reads active products and variants from Laravel. Set `NIHAN_CATALOG_API_URL` to the Laravel origin reachable from the Next.js server. It defaults to `http://localhost:97` for local development. Laravel's `APP_URL` must point to the browser-accessible Laravel origin so uploaded images load.
 
@@ -41,7 +40,7 @@ Clone this repository on the VPS and ensure the deployment user can pull `main` 
 Copy `.env.example` to `.env` in the VPS checkout and configure these values.
 
 - `NIHAN_CATALOG_API_URL` is the Laravel origin reachable from the container. Use the production Laravel origin when deploying.
-- `PORT` is the VPS loopback port used by the reverse proxy. It defaults to `1008`. Match it to your proxy upstream and forward `/dashboard/` with its prefix intact.
+- `PORT` is the VPS loopback port used by the reverse proxy. It defaults to `1008`, and production uses `1013`. Forward the storefront domain to Next.js with paths intact.
 - `NIHAN_HERO_VIDEO_ID` optionally overrides the storefront's default YouTube video. Deploy again after changing it so the build includes the new ID.
 
 Set these GitHub Actions repository secrets.
@@ -50,6 +49,6 @@ Set these GitHub Actions repository secrets.
 - `VPS_PASSWORD` is the password for that SSH user.
 - `VPS_PROJECT_DIR` is the absolute path to this repository on the VPS.
 
-Every push to `main` triggers the deployment. You can also run **CI/CD** manually from the Actions tab on `main`. The workflow builds the image on the VPS and checks container health at `/dashboard/`.
+Every push to `main` triggers the deployment. You can also run **CI/CD** manually from the Actions tab on `main`. The workflow builds the image on the VPS and checks container health at `/`.
 
 To use the same command-line deployment flow as Zaxcode, run `./bash/git_bash.sh local "your commit message"` to commit your changes and `./bash/git_bash.sh production` to push `main` and watch the deployment with the authenticated GitHub CLI.
