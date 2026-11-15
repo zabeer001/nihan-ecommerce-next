@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ProductGrid, ScentGrid } from "../catalog";
+import { ProductGrid } from "../catalog";
+import { ScentGrid } from "../homepage";
 
 export const metadata: Metadata = {
   title: "Fragrance – NIHAN",

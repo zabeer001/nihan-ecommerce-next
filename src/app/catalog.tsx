@@ -1,63 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { categoryHref, formatPrice, getCategories, getProducts } from "./catalog-api";
-
-const scents = [
-  ["Woody", "Oud Noir", "Smoked oud, amber and a trace of leather."],
-  ["Fresh", "Padma", "Water lily, cool musk and green tea."],
-  ["Green", "Mango Leaf", "Crushed leaves and sun-warmed fruit."],
-  ["Warm", "Monsoon", "Wet earth, cardamom and soft vanilla."],
-];
-
-export function DiffuserArtwork({ tint = 0 }: { tint?: number }) {
-  return (
-    <svg
-      viewBox="0 0 120 220"
-      aria-hidden="true"
-      style={tint ? { filter: `hue-rotate(${tint}deg)` } : undefined}
-    >
-      <use href="#diffuser" />
-    </svg>
-  );
-}
-
-export function ArtworkDefinitions() {
-  return (
-    <svg width="0" height="0" className="artwork-definitions" aria-hidden="true">
-      <defs>
-        <linearGradient id="metal" x1="0" x2="1">
-          <stop offset="0" stopColor="#0c1210" />
-          <stop offset=".35" stopColor="#3a4640" />
-          <stop offset=".6" stopColor="#151d19" />
-          <stop offset="1" stopColor="#0a0f0d" />
-        </linearGradient>
-        <radialGradient id="star">
-          <stop offset="0" stopColor="#f4e4c1" />
-          <stop offset="1" stopColor="#d4b483" stopOpacity="0" />
-        </radialGradient>
-        <symbol id="diffuser" viewBox="0 0 120 220">
-          <ellipse cx="60" cy="206" rx="34" ry="6" fill="#000" opacity=".4" />
-          <rect x="30" y="50" width="60" height="150" rx="14" fill="url(#metal)" stroke="#d4b483" strokeOpacity=".35" />
-          <rect x="36" y="38" width="48" height="16" rx="4" fill="#1c2622" stroke="#d4b483" strokeOpacity=".45" />
-          <circle cx="60" cy="150" r="22" fill="url(#star)" opacity=".55" />
-          <circle cx="60" cy="150" r="3" fill="#f4e4c1" />
-          <circle cx="48" cy="130" r="1.2" fill="#f4e4c1" />
-          <circle cx="72" cy="168" r="1.2" fill="#f4e4c1" />
-          <circle cx="70" cy="122" r="1" fill="#f4e4c1" />
-          <circle cx="46" cy="172" r="1" fill="#f4e4c1" />
-          <path
-            d="M60 32c-8-10 8-14 0-26M52 34c-6-8 5-10 0-18M68 34c-6-8 5-10 0-18"
-            fill="none"
-            stroke="#d4b483"
-            strokeOpacity=".5"
-            strokeLinecap="round"
-          />
-        </symbol>
-      </defs>
-    </svg>
-  );
-}
+import { formatPrice, getProducts } from "./catalog-api";
 
 type GridProps = {
   category?: string | number;
@@ -105,35 +49,5 @@ async function CatalogProducts({ category, searchParams }: GridProps) {
         </nav>
       )}
     </>
-  );
-}
-
-export async function CategoryCollections() {
-  const categories = await getCategories().catch(() => null);
-  if (!categories) return <p role="status">Categories are temporarily unavailable.</p>;
-  if (!categories.length) return <p>No categories are available yet.</p>;
-
-  return categories.map(({ id, name }) => (
-    <section key={id} aria-labelledby={`collection-${id}`}>
-      <div className="collection-row-heading">
-        <h3 id={`collection-${id}`}>{name}</h3>
-        <Link className="link" href={categoryHref(id)}>View all <span className="visually-hidden">{name}</span></Link>
-      </div>
-      <ProductGrid category={id} />
-    </section>
-  ));
-}
-
-export function ScentGrid() {
-  return (
-    <div className="scents">
-      {scents.map(([family, name, description]) => (
-        <div className="scent" key={name}>
-          <small>{family}</small>
-          <h3>{name}</h3>
-          <p>{description}</p>
-        </div>
-      ))}
-    </div>
   );
 }

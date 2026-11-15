@@ -22,7 +22,7 @@ The storefront reads active products and variants from Laravel. Set `NIHAN_CATAL
 
 See the [storefront and order integration guide](docs/storefront-order-integration.md) for the audit, COD workflow, and release checks.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Edit `src/app/homepage.tsx` to change the homepage sections, artwork, styles, or scroll effects. `src/app/page.tsx` loads its catalog data.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { ArtworkDefinitions } from "./catalog";
 import { Footer, Header } from "./storefront";
 import "./globals.css";
 
@@ -18,14 +17,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           try {
-            if (localStorage.getItem("nihan-theme") === "light") {
-              document.documentElement.dataset.theme = "light";
+            const sharedTheme = document.cookie.match(/(?:^|;\\s*)nihan-theme=(light|dark)(?:;|$)/)?.[1];
+            const theme = sharedTheme || localStorage.getItem("nihan-theme");
+            if (theme === "light" || theme === "dark") {
+              document.documentElement.dataset.theme = theme;
+              if (!sharedTheme) document.cookie = "nihan-theme=" + theme + "; Path=/; Max-Age=31536000; SameSite=Lax";
             }
           } catch {}
         ` }} />
       </head>
       <body>
-        <ArtworkDefinitions />
         <Header />
         {children}
         <Footer />
