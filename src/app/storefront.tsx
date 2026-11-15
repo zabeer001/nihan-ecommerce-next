@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { categoryHref, getCategories } from "./catalog-api";
+import { CartLink } from "./cart/cart-link";
 import { ThemeToggle } from "./theme-toggle";
 
 async function CategoryLinks() {
@@ -27,6 +28,7 @@ export function Header() {
             <Link href="/products">Shop</Link>
             <Suspense><CategoryLinks /></Suspense>
             <Link href="/our-story">Our story</Link>
+            <Link href="/my-orders">My Orders</Link>
           </nav>
           <div className="icons">
             <ThemeToggle />
@@ -36,17 +38,13 @@ export function Header() {
                 <path d="M20 20l-4-4" />
               </svg>
             </button>
-            <button type="button" aria-label="Account" disabled>
+            <a className="account-link" href="/sign-in/" aria-label="Sign in">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 21c1-5 4-7 8-7s7 2 8 7" />
               </svg>
-            </button>
-            <button type="button" aria-label="Cart" disabled>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2" />
-              </svg>
-            </button>
+            </a>
+            <CartLink />
           </div>
         </div>
       </header>
@@ -71,6 +69,7 @@ export function Footer() {
           <div>
             <h4>Help</h4>
             <Link href="/#faq">FAQs</Link>
+            <Link href="/track-order">Track an order</Link>
             <span>Delivery</span>
             <span>Returns</span>
             <span>Contact</span>

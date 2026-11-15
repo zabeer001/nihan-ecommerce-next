@@ -20,6 +20,8 @@ The storefront is at [https://nihan.glifnode.com/](https://nihan.glifnode.com/).
 
 The storefront reads active products and variants from Laravel. Set `NIHAN_CATALOG_API_URL` to the Laravel origin reachable from the Next.js server. It defaults to `http://localhost:97` for local development. Laravel's `APP_URL` must point to the browser-accessible Laravel origin so uploaded images load.
 
+See the [storefront and order integration guide](docs/storefront-order-integration.md) for the audit, COD workflow, and release checks.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
@@ -40,6 +42,7 @@ Clone this repository on the VPS and ensure the deployment user can pull `main` 
 Copy `.env.example` to `.env` in the VPS checkout and configure these values.
 
 - `NIHAN_CATALOG_API_URL` is the Laravel origin reachable from the container. Use the production Laravel origin when deploying.
+- `NIHAN_LARAVEL_PUBLIC_URL` is the browser-accessible Laravel origin used by the sign-in icon. Set it to your public Laravel URL when deploying. If omitted, the storefront uses the catalog origin or `http://localhost:97`.
 - `PORT` is the VPS loopback port used by the reverse proxy. It defaults to `1008`, and production uses `1013`. Forward the storefront domain to Next.js with paths intact.
 - `NIHAN_HERO_VIDEO_ID` optionally overrides the storefront's default YouTube video. Deploy again after changing it so the build includes the new ID.
 

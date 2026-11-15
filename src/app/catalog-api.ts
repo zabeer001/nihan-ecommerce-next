@@ -34,9 +34,7 @@ export type CatalogPage = {
   has_more: boolean;
 };
 
-export function formatPrice(cents: number) {
-  return new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT" }).format(cents / 100);
-}
+export { formatPrice } from "./money";
 
 async function requestCatalog(path: string) {
   await connection();
