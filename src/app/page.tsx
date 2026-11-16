@@ -11,7 +11,5 @@ async function getHomepageCollections(): Promise<HomepageCollection[] | null> {
 }
 
 export default function Page() {
-  const videoId = process.env.NIHAN_HERO_VIDEO_ID?.trim() || "ScMzIvxBSi4";
-
-  return <Homepage videoId={videoId} collections={getHomepageCollections()} />;
+  return <Homepage collections={getHomepageCollections()} />;
 }

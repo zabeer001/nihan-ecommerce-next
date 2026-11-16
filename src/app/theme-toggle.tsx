@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 
 const themeChange = "nihan-theme-change";
@@ -19,12 +20,14 @@ function subscribe(callback: () => void) {
   };
 }
 
-function isLightTheme() {
-  return document.documentElement.dataset.theme === "light";
-}
-
 export function ThemeToggle() {
-  const light = useSyncExternalStore(subscribe, isLightTheme, () => false);
+  const home = usePathname() === "/";
+  function isLightTheme() {
+    const { theme } = document.documentElement.dataset;
+    return theme ? theme === "light" : home;
+  }
+
+  const light = useSyncExternalStore(subscribe, isLightTheme, () => home);
 
   function toggleTheme() {
     const theme = isLightTheme() ? "dark" : "light";

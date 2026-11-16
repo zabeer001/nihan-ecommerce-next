@@ -5,6 +5,7 @@ import { formatPrice, getProducts } from "./catalog-api";
 
 type GridProps = {
   category?: string | number;
+  search?: string;
   searchParams?: Promise<{ page?: string | string[] }>;
 };
 
@@ -16,12 +17,15 @@ export function ProductGrid(props: GridProps) {
   );
 }
 
-async function CatalogProducts({ category, searchParams }: GridProps) {
+async function CatalogProducts({ category, search, searchParams }: GridProps) {
   const params = await searchParams;
   const requestedPage = typeof params?.page === "string" ? Number(params.page) : 1;
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
-  const catalog = await getProducts(category, page).catch(() => null);
-  const categoryQuery = typeof category === "number" ? { category: String(category) } : {};
+  const catalog = await getProducts(category, page, search).catch(() => null);
+  const query = {
+    ...(typeof category === "number" && { category: String(category) }),
+    ...(search && { q: search }),
+  };
 
   if (!catalog) return <p role="status">Products are temporarily unavailable.</p>;
 
@@ -41,11 +45,11 @@ async function CatalogProducts({ category, searchParams }: GridProps) {
             </article>
           ))}
         </div>
-      ) : <p>No products on this page.</p>}
+      ) : <p>{search && page === 1 ? "No products match your search." : "No products on this page."}</p>}
       {searchParams && (page > 1 || catalog.has_more) && (
         <nav className="catalog-pagination" aria-label="Product pages">
-          {page > 1 && <Link className="link" href={{ query: { ...categoryQuery, page: page - 1 } }}>Previous</Link>}
-          {catalog.has_more && <Link className="link" href={{ query: { ...categoryQuery, page: page + 1 } }}>Next</Link>}
+          {page > 1 && <Link className="link" href={{ query: { ...query, page: page - 1 } }}>Previous</Link>}
+          {catalog.has_more && <Link className="link" href={{ query: { ...query, page: page + 1 } }}>Next</Link>}
         </nav>
       )}
     </>

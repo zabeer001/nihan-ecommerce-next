@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { categoryHref, getCategories } from "./catalog-api";
 import { CartLink } from "./cart/cart-link";
+import { HomepageMenu } from "./homepage-menu";
 import { ThemeToggle } from "./theme-toggle";
 
 async function CategoryLinks() {
@@ -10,28 +11,27 @@ async function CategoryLinks() {
 }
 
 export function Header() {
+  const links = (
+    <>
+      <Link href="/products">Shop</Link>
+      <Suspense><CategoryLinks /></Suspense>
+      <Link href="/our-story">Our story</Link>
+      <Link href="/my-orders">My Orders</Link>
+    </>
+  );
+
   return (
     <>
       <div className="ann" id="top">Delivering across Bangladesh · Est. 2026</div>
       <header>
         <div className="wrap bar">
+          <HomepageMenu>{links}</HomepageMenu>
           <Link className="logo" href="/" aria-label="NIHAN home">
-            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" aria-hidden="true">
-              <path d="M8 8l8 4 8-3 8 3 8-4-2 12 3 9-8 10-9 4-9-4-8-10 3-9z" />
-              <path d="M17 24l5 2M31 24l-5 2M24 28v8M20 37l4 2 4-2" />
-              <circle cx="18" cy="22" r="1" fill="currentColor" />
-              <circle cx="30" cy="22" r="1" fill="currentColor" />
-            </svg>
-            NIHAN
+            <span className="brand-wordmark" aria-hidden="true" />
           </Link>
-          <nav aria-label="Main">
-            <Link href="/products">Shop</Link>
-            <Suspense><CategoryLinks /></Suspense>
-            <Link href="/our-story">Our story</Link>
-            <Link href="/my-orders">My Orders</Link>
-          </nav>
+          <nav aria-label="Main">{links}</nav>
           <div className="icons">
-            <ThemeToggle />
+            <Suspense><ThemeToggle /></Suspense>
             <button type="button" aria-label="Search" disabled>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="7" />

@@ -63,10 +63,11 @@ export const getCategories = cache(async (): Promise<CatalogCategory[]> => {
   return data;
 });
 
-export async function getProducts(category: string | number | undefined, page: number): Promise<CatalogPage> {
+export async function getProducts(category: string | number | undefined, page: number, search?: string): Promise<CatalogPage> {
   const params = new URLSearchParams({ page: String(page) });
   if (typeof category === "number") params.set("category_id", String(category));
   if (typeof category === "string") params.set("category", category);
+  if (search) params.set("q", search);
 
   const { response, url } = await requestCatalog(`products?${params}`);
   if (!response.ok) throw new Error("Catalog request failed.");

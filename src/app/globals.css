@@ -12,6 +12,7 @@
   --body-copy: #cfd5cf;
   --announcement: #0a110e;
   --header-bg: rgba(15, 23, 20, .92);
+  --wordmark-ink: #fff;
   --product-hover: #20322c;
   --button-text: #101713;
   --serif: "Cormorant Garamond", Georgia, serif;
@@ -33,6 +34,7 @@
   --body-copy: #39483e;
   --announcement: #eae2d2;
   --header-bg: rgba(250, 247, 240, .94);
+  --wordmark-ink: #000;
   --product-hover: #e7deca;
   --button-text: #fffaf0;
 }
@@ -139,6 +141,10 @@ h2 em {
 }
 
 /* announcement + header */
+.homepage-menu {
+  display: none;
+}
+
 .ann {
   background: var(--announcement);
   text-align: center;
@@ -176,9 +182,26 @@ header {
   letter-spacing: .04em;
 }
 
-.logo svg {
-  width: 44px;
-  height: 44px;
+.bar .logo {
+  --wordmark-height: clamp(16px, 4.4vw, 20px);
+  width: fit-content;
+  min-height: max(44px, calc(var(--wordmark-height) * 2 + 4px));
+  color: color-mix(in srgb, white var(--header-overlay, 0%), var(--wordmark-ink));
+}
+
+.brand-wordmark {
+  display: block;
+  height: var(--wordmark-height);
+  aspect-ratio: 8432 / 1550;
+  background: currentColor;
+  mask: url("/nihan-wordmark.svg") center / contain no-repeat;
+  forced-color-adjust: none;
+}
+
+@media (min-width: 700px) {
+  .bar .logo {
+    --wordmark-height: clamp(22px, 2vw, 28px);
+  }
 }
 
 nav {
@@ -557,15 +580,6 @@ button:disabled, input:disabled {
     gap: 8px;
   }
 
-  .bar .logo {
-    gap: 8px;
-    font-size: 1.75rem;
-  }
-
-  .bar .logo svg {
-    width: 36px;
-    height: 36px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
