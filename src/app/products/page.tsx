@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ProductGrid } from "../catalog";
 import { getCategories } from "../catalog-api";
+import { StorefrontPage } from "../storefront-page";
 
 export const metadata: Metadata = { title: "Shop – NIHAN" };
 
@@ -14,8 +15,10 @@ async function Shop({ searchParams }: PageProps<"/products">) {
 
   return (
     <>
-      <div className="head"><h1 className="category-title">{search ? "Search results" : category?.name ?? "Shop"}</h1></div>
-      {search && <p>Products matching “{search}”</p>}
+      <div className="head">
+        <h1 className="category-title">{search ? "Search results" : category?.name ?? "Shop"}</h1>
+        {search && <p>Products matching “{search}”</p>}
+      </div>
       {!!categories?.length && (
         <nav className="catalog-filters" aria-label="Product categories">
           <Link href={{ pathname: "/products", query: searchQuery }} aria-current={params.category === undefined ? "page" : undefined}>All products</Link>
@@ -35,12 +38,12 @@ async function Shop({ searchParams }: PageProps<"/products">) {
 
 export default function ProductsPage(props: PageProps<"/products">) {
   return (
-    <main>
+    <StorefrontPage>
       <section className="wrap">
         <Suspense fallback={<p role="status">Loading shop…</p>}>
           <Shop {...props} />
         </Suspense>
       </section>
-    </main>
+    </StorefrontPage>
   );
 }

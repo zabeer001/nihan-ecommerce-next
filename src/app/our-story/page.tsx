@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StorefrontPage } from "../storefront-page";
 
 export const metadata: Metadata = {
   title: "Our Story – NIHAN",
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function OurStoryPage() {
   return (
-    <main>
+    <StorefrontPage>
       <section className="split" aria-labelledby="story-title">
         <div className="wrap">
           <div className="head">
@@ -19,6 +20,6 @@ export default function OurStoryPage() {
           </div>
         </div>
       </section>
-    </main>
+    </StorefrontPage>
   );
 }

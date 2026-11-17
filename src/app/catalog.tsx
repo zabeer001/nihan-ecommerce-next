@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { formatPrice, getProducts } from "./catalog-api";
+import { getProducts } from "./catalog-api";
+import { ProductCard } from "./product-card";
 
 type GridProps = {
   category?: string | number;
@@ -32,18 +32,8 @@ async function CatalogProducts({ category, search, searchParams }: GridProps) {
   return (
     <>
       {catalog.data.length ? (
-        <div className="grid">
-          {catalog.data.map(({ slug, name, price_cents, image }) => (
-            <article className="card" key={slug}>
-              <Link href={`/products/${encodeURIComponent(slug)}`}>
-                <div className="product-art">
-                  {image && <Image src={image.url} alt="" fill unoptimized className="catalog-cover" />}
-                </div>
-                <h3>{name}</h3>
-                <p>{formatPrice(price_cents)}</p>
-              </Link>
-            </article>
-          ))}
+        <div className="tiles">
+          {catalog.data.map(product => <ProductCard key={product.slug} product={product} />)}
         </div>
       ) : <p>{search && page === 1 ? "No products match your search." : "No products on this page."}</p>}
       {searchParams && (page > 1 || catalog.has_more) && (

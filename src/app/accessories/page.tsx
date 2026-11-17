@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProductGrid } from "../catalog";
+import { StorefrontPage } from "../storefront-page";
 
 export const metadata: Metadata = {
   title: "Accessories – NIHAN",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AccessoriesPage({ searchParams }: PageProps<"/accessories">) {
   return (
-    <main>
+    <StorefrontPage>
       <section aria-labelledby="accessories-title">
         <div className="wrap">
           <div className="head">
@@ -17,6 +18,6 @@ export default function AccessoriesPage({ searchParams }: PageProps<"/accessorie
           <ProductGrid category="accessories" searchParams={searchParams} />
         </div>
       </section>
-    </main>
+    </StorefrontPage>
   );
 }

@@ -29,7 +29,7 @@ export function CartPage() {
   const cart = useCart();
   const { quote, error, loading, retry } = useQuote(cart);
 
-  if (!cart.length) return <div className="commerce-panel"><p>Your cart is empty.</p><Link className="btn fill" href="/products">Browse products</Link></div>;
+  if (!cart.length) return <div className="commerce-panel commerce-narrow"><p>Your cart is empty.</p><Link className="btn fill" href="/products">Browse products</Link></div>;
 
   return (
     <div className="commerce-grid">

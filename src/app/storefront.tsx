@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { categoryHref, getCategories } from "./catalog-api";
 import { CartLink } from "./cart/cart-link";
-import { HomepageMenu } from "./homepage-menu";
+import { StorefrontMenu } from "./storefront-menu";
 import { ThemeToggle } from "./theme-toggle";
 
 async function CategoryLinks() {
@@ -21,34 +21,24 @@ export function Header() {
   );
 
   return (
-    <>
-      <div className="ann" id="top">Delivering across Bangladesh · Est. 2026</div>
-      <header>
-        <div className="wrap bar">
-          <HomepageMenu>{links}</HomepageMenu>
-          <Link className="logo" href="/" aria-label="NIHAN home">
-            <span className="brand-wordmark" aria-hidden="true" />
-          </Link>
-          <nav aria-label="Main">{links}</nav>
-          <div className="icons">
-            <Suspense><ThemeToggle /></Suspense>
-            <button type="button" aria-label="Search" disabled>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-4-4" />
-              </svg>
-            </button>
-            <a className="account-link" href="/sign-in/" aria-label="Sign in">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c1-5 4-7 8-7s7 2 8 7" />
-              </svg>
-            </a>
-            <CartLink />
-          </div>
+    <header>
+      <div className="wrap bar">
+        <StorefrontMenu>{links}</StorefrontMenu>
+        <Link className="logo" href="/" aria-label="NIHAN home">
+          <span className="brand-wordmark" aria-hidden="true" />
+        </Link>
+        <div className="icons">
+          <Suspense><ThemeToggle /></Suspense>
+          <a className="account-link" href="/sign-in/" aria-label="Sign in">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c1-5 4-7 8-7s7 2 8 7" />
+            </svg>
+          </a>
+          <CartLink />
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 }
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { formatPrice, getProduct } from "../../catalog-api";
 import { ProductGallery } from "./product-gallery";
+import { StorefrontPage } from "../../storefront-page";
 
 async function ProductDetails({ params }: PageProps<"/products/[slug]">) {
   const { slug } = await params;
@@ -15,13 +16,13 @@ async function ProductDetails({ params }: PageProps<"/products/[slug]">) {
 
 export default function ProductPage(props: PageProps<"/products/[slug]">) {
   return (
-    <main>
+    <StorefrontPage>
       <section className="wrap">
         <Link className="link" href="/products">All products</Link>
         <Suspense fallback={<p role="status">Loading product…</p>}>
           <ProductDetails {...props} />
         </Suspense>
       </section>
-    </main>
+    </StorefrontPage>
   );
 }

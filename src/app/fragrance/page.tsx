@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ProductGrid } from "../catalog";
-import { ScentGrid } from "../homepage";
+import { ScentGrid } from "../scent-grid";
+import { StorefrontPage } from "../storefront-page";
 
 export const metadata: Metadata = {
   title: "Fragrance – NIHAN",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function FragrancePage({ searchParams }: PageProps<"/fragrance">) {
   return (
-    <main>
+    <StorefrontPage>
       <section aria-labelledby="fragrance-title">
         <div className="wrap">
           <div className="head">
@@ -22,6 +23,6 @@ export default function FragrancePage({ searchParams }: PageProps<"/fragrance">)
           </div>
         </div>
       </section>
-    </main>
+    </StorefrontPage>
   );
 }

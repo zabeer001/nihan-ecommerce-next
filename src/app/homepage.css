@@ -1,34 +1,7 @@
 /* Next.js can retain the homepage with display: none after navigating away. */
 body:has(> .home-page:not([style*="display: none"])) {
-  color-scheme: light;
-  --bg: #fff;
-  --bg2: #f5f5f3;
-  --line: #dededb;
-  --gold: #151515;
-  --ivory: #151515;
-  --mute: #575754;
-  --header-bg: var(--bg);
-  --wordmark-ink: #000;
-  --sans: "Helvetica Neue", Arial, sans-serif;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  background: var(--bg);
-  font-weight: 400;
-}
-
-:root[data-theme="dark"] body:has(> .home-page:not([style*="display: none"])) {
-  color-scheme: dark;
-  --bg: #141414;
-  --bg2: #1e1e1e;
-  --line: #3c3c3c;
-  --gold: #f6f6f4;
-  --ivory: #f6f6f4;
-  --mute: #bdbdb8;
-  --wordmark-ink: #fff;
-}
-
-body:has(> .home-page:not([style*="display: none"])) > .ann {
-  display: none;
 }
 
 body:has(> .home-page:not([style*="display: none"])) > header {
@@ -93,164 +66,14 @@ body:has(> .home-page:not([style*="display: none"], [data-past-hero])) > header 
   }
 }
 
-body:has(> .home-page:not([style*="display: none"])) .bar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 8px;
-  max-width: 1680px;
-  padding-inline: clamp(14px, 3.5vw, 56px);
-  padding-block: 12px;
-}
-
-body:has(> .home-page:not([style*="display: none"])) .bar .logo {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-body:has(> .home-page:not([style*="display: none"])) .brand-wordmark {
-  width: clamp(90px, 15vw, 174px);
-  height: auto;
-  aspect-ratio: 5.7;
-  /* The supplied PNG is white artwork on black. Use its luminance for transparency. */
-  mask: url("/Monochrome%20Tiger%20Logo%20with%20NIHAN%20Typography.png") center / 126% auto no-repeat luminance;
-}
-
-body:has(> .home-page:not([style*="display: none"])) .bar .icons {
-  grid-column: 3;
-  grid-row: 1;
-  justify-self: end;
-  gap: clamp(8px, 2vw, 22px);
-}
-
-body:has(> .home-page:not([style*="display: none"])) .bar .icons button:disabled {
-  display: none;
-}
-
-body:has(> .home-page:not([style*="display: none"])) .bar > nav {
-  display: none;
-}
-
-body:has(> .home-page:not([style*="display: none"])) .homepage-menu {
-  display: flex;
-  grid-area: 1 / 1;
-  align-items: center;
-  gap: clamp(8px, 2.5vw, 32px);
-}
-
-.homepage-menu .menu-trigger,
-.homepage-panel-heading button {
-  min-height: 44px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: .87rem;
-  cursor: pointer;
-}
-
-.homepage-menu .menu-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.homepage-menu .menu-trigger svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.75;
-}
-
-.homepage-panel {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: min(100%, 420px);
-  max-width: none;
-  height: 100%;
-  max-height: none;
-  margin: 0;
-  padding: clamp(20px, 5vw, 40px);
-  border: 0;
-  background: var(--bg);
-  color: var(--ivory);
-}
-
-.homepage-panel::backdrop {
-  background: rgb(0 0 0 / 45%);
-}
-
-.homepage-panel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.homepage-panel-heading h2 {
-  font: inherit;
-  font-size: 1.35rem;
-}
-
-.homepage-panel-heading button {
-  min-width: 44px;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.homepage-panel nav,
-.homepage-panel form {
-  display: grid;
-  gap: 12px;
-}
-
-.homepage-panel nav a {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.homepage-panel input {
-  min-width: 0;
-  min-height: 44px;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  background: var(--bg2);
-  color: inherit;
-  font: inherit;
-}
-
-.homepage-panel .btn.fill {
-  color: var(--bg);
-}
-
-@media (max-width: 620px) {
-  .homepage-menu .menu-trigger {
-    min-width: 44px;
-  }
-
-  .homepage-menu .menu-trigger span {
-    display: none;
-  }
-}
-
-@media (max-width: 380px) {
-  body:has(> .home-page:not([style*="display: none"])) .bar {
-    gap: 4px;
-    padding-inline: 8px;
-  }
-
-  body:has(> .home-page:not([style*="display: none"])) .bar .icons,
-  body:has(> .home-page:not([style*="display: none"])) .homepage-menu {
-    gap: 2px;
-  }
-}
-
 body:has(> .home-page:not([style*="display: none"])) > footer {
   grid-area: 2 / 1;
-  background: var(--bg2);
+  --gold: #c2a06b;
+  --ivory: #f4f1e9;
+  --mute: #b8c4bd;
+  --line: rgb(244 241 233 / 18%);
+  background: #0e2a20;
+  color: var(--gold);
 }
 
 .home-page :is(h1, h2, h3, h4) {
@@ -281,7 +104,17 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
 }
 
 .home-page .alt {
-  background: var(--bg2);
+  --gold: #c2a06b;
+  --ivory: #f4f1e9;
+  --mute: #b8c4bd;
+  --body-copy: #e3e8e4;
+  --line: rgb(244 241 233 / 18%);
+  background: #0e2a20;
+  color: var(--gold);
+}
+
+.home-page .category-alt .tile p {
+  color: var(--gold);
 }
 
 .home-page .text-link {
@@ -425,10 +258,36 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   gap: clamp(28px, 5vw, 64px);
 }
 
+.home-page .category-section {
+  width: 100%;
+}
+
+.home-page .category-alt {
+  --gold: #c2a06b;
+  --ivory: #f4f1e9;
+  --mute: #b8c4bd;
+  --line: rgb(244 241 233 / 18%);
+  padding-block: clamp(32px, 5vw, 64px);
+  background: #0e2a20;
+  color: var(--gold);
+}
+
+.home-page .category-alt .tile-art {
+  background: #18382c;
+}
+
+.home-page .category-alt .row-heading .text-link {
+  color: var(--gold);
+}
+
 .home-page .collection-image {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.home-page .collection-image + .category-alt {
+  margin-top: calc(-1 * clamp(28px, 5vw, 64px));
 }
 
 .home-page .row-heading {
@@ -446,36 +305,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   text-transform: uppercase;
 }
 
-.home-page .tiles {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px 10px;
-}
-
-.home-page .tile a {
-  display: block;
-}
-
-.home-page .tile-art {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: var(--bg2);
-}
-
-.home-page .tile .cover {
-  object-fit: contain;
-}
-
-.home-page .tile h4 {
-  margin-top: 12px;
-  font-size: .83rem;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.home-page .tile p,
 .home-page .note {
   margin: 4px 0 0;
   color: var(--mute);
@@ -499,16 +328,14 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   list-style: none;
 }
 
-.home-page .columns > *,
-.home-page .scents .scent {
+.home-page .columns > * {
   margin: 0;
   padding: 22px 0;
   border: 0;
   border-bottom: 1px solid var(--line);
 }
 
-.home-page .columns h3,
-.home-page .scent h3 {
+.home-page .columns h3 {
   margin-bottom: 8px;
   font-size: .94rem;
   letter-spacing: .06em;
@@ -516,7 +343,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
 }
 
 .home-page .columns p,
-.home-page .scent p,
 .home-page .faq-list p {
   max-width: 56ch;
   margin: 0;
@@ -524,29 +350,11 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   font-size: .9rem;
 }
 
-.home-page .scents {
-  border: 0;
-  border-top: 1px solid var(--line);
-}
-
-.home-page .scent small,
 .home-page .reviews figcaption {
   color: var(--mute);
   font-size: .72rem;
   letter-spacing: .08em;
   text-transform: uppercase;
-}
-
-.home-page .scent small {
-  margin-bottom: 8px;
-}
-
-.home-page .scent small::before {
-  background: var(--tone);
-}
-
-.home-page .scent::after {
-  content: none;
 }
 
 .home-page .reviews blockquote {
@@ -591,10 +399,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
 }
 
 @media (min-width: 640px) {
-  .home-page .tiles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .home-page .strip ul {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -605,36 +409,20 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .home-page .columns > *,
-  .home-page .scents .scent {
+  .home-page .columns > * {
     padding: 26px 24px;
   }
 
-  .home-page .columns > :first-child,
-  .home-page .scents .scent:first-child {
+  .home-page .columns > :first-child {
     padding-left: 0;
   }
 
-  .home-page .columns > * + *,
-  .home-page .scents .scent + .scent {
+  .home-page .columns > * + * {
     border-left: 1px solid var(--line);
   }
 }
 
-@media (min-width: 1000px) {
-  .home-page .tiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 16px;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .home-page {
-    --impact-ease: cubic-bezier(.22, 1.25, .36, 1);
-    --impact-distance: min(90px, 12vw);
-    overflow-x: clip;
-  }
-
   .home-page .hero-label {
     animation: home-impact-left .5s var(--impact-ease) both;
   }
@@ -659,38 +447,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
     transition: transform .12s var(--impact-ease);
   }
 
-  .home-page [data-impact-from] {
-    transition:
-      translate .55s var(--impact-ease) var(--impact-delay, 0ms),
-      scale .55s var(--impact-ease) var(--impact-delay, 0ms),
-      opacity .16s linear var(--impact-delay, 0ms),
-      transform .12s var(--impact-ease);
-  }
-
-  .home-page [data-impact-from]:not([data-impact-in]) {
-    opacity: 0;
-  }
-
-  .home-page [data-impact-from="left"]:not([data-impact-in]) {
-    translate: calc(-1 * var(--impact-distance));
-  }
-
-  .home-page [data-impact-from="right"]:not([data-impact-in]) {
-    translate: var(--impact-distance);
-  }
-
-  .home-page [data-impact-from="up"]:not([data-impact-in]) {
-    translate: 0 44px;
-    scale: .92;
-  }
-
-  .home-page [data-impact-from]:focus-within {
-    opacity: 1;
-    translate: none;
-    scale: none;
-    transition: none;
-  }
-
   .home-page .text-link {
     display: inline-block;
   }
@@ -703,14 +459,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
     transform: scale(.95);
   }
 
-  .home-page .tile .tile-art {
-    transition: scale .15s var(--impact-ease);
-  }
-
-  .home-page .tile a:active .tile-art {
-    scale: .975;
-  }
-
   .home-page .faq-list summary {
     transition: padding-left .2s var(--impact-ease);
   }
@@ -719,14 +467,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
     .home-page .faq-list summary:hover {
       padding-left: 8px;
     }
-  }
-
-  .home-page .tile .cover {
-    transition: scale .35s ease;
-  }
-
-  .home-page .tile a:is(:hover, :focus-visible) .cover {
-    scale: 1.035;
   }
 }
 
