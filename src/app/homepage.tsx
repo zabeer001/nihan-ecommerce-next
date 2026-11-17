@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, Suspense, use, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import type { CatalogCategory, CatalogPage } from "./catalog-api";
+import { Fragment, Suspense, use, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { CatalogCategory, CatalogPage, HomepageContent } from "./catalog-api";
 import { useImpactMotion } from "./impact-motion";
 import { ProductCard } from "./product-card";
 import { ScentGrid } from "./scent-grid";
@@ -15,6 +15,7 @@ export type HomepageCollection = CatalogCategory & {
 
 type HomepageProps = {
   collections: Promise<HomepageCollection[] | null>;
+  homepageContent: Promise<HomepageContent[] | null>;
 };
 
 const highlights = ["One-touch control", "50 ml refillable", "Starlight glow", "Cash on delivery"];
@@ -38,7 +39,7 @@ const reviews = [
   ["Delivery was quick and the packaging felt like a gift.", "Sabbir · Rajshahi"],
 ];
 
-export default function Homepage({ collections }: HomepageProps) {
+export default function Homepage({ collections, homepageContent }: HomepageProps) {
   const pageRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -75,8 +76,10 @@ export default function Homepage({ collections }: HomepageProps) {
 
   return (
     <main className="home-page" ref={pageRef}>
-      <HeroVideo />
-      <CollectionSection collections={collections} />
+      <Suspense fallback={<section className="hero" aria-label="NIHAN diffuser introduction" />}>
+        <HeroVideo homepageContent={homepageContent} />
+      </Suspense>
+      <CollectionSection collections={collections} homepageContent={homepageContent} />
       <Highlights />
       <QuickStart />
       <FragranceSection />
@@ -104,36 +107,54 @@ function subscribeToMotion(callback: () => void) {
   return () => query.removeEventListener("change", callback);
 }
 
-function HeroVideo() {
+function HeroVideo({ homepageContent }: Pick<HomepageProps, "homepageContent">) {
   const prefersReducedMotion = useSyncExternalStore(
     subscribeToMotion,
     () => window.matchMedia(reduceMotion).matches,
     () => true,
   );
   const [playVideo, setPlayVideo] = useState<boolean>();
+  const [activeSlide, setActiveSlide] = useState(0);
+  const content = use(homepageContent);
+  const slides = content?.filter(item => item.placement === "hero") ?? [];
+  const slide = slides.length ? slides[activeSlide % slides.length] : null;
   const playing = playVideo ?? !prefersReducedMotion;
+  useEffect(() => {
+    if (slides.length < 2 || prefersReducedMotion) return;
+    const timer = window.setInterval(() => setActiveSlide(index => (index + 1) % slides.length), 7000);
+    return () => window.clearInterval(timer);
+  }, [slides.length, prefersReducedMotion]);
   return (
     <section className="hero" aria-label="NIHAN diffuser introduction">
       <div className="hero-media" aria-hidden="true">
-        {playing && (
+        {slide?.media_type === "image" ? (
+          <Image src={slide.media_url} alt="" width={1920} height={1080} unoptimized priority />
+        ) : playing ? (
           <video
-            src="/glifnode_nihan_hero.mp4"
-            autoPlay
+            key={slide?.id ?? "fallback"}
+            src={slide?.media_url ?? "/glifnode_nihan_hero.mp4"}
+            poster={slide?.poster_url ?? undefined}
+            autoPlay={playing}
             muted
             loop
             playsInline
           />
-        )}
+        ) : (slide?.poster_url ? <Image className="hero-poster" src={slide.poster_url} alt="" width={1920} height={1080} unoptimized /> : null)}
       </div>
       <div className="hero-overlay">
         <div className="p-wrap hero-copy">
-          <div className="hero-actions">
-            <a className="text-link" href="#shop">Shop the collection</a>
-            <a className="text-link" href="#quick-start">See how it works</a>
+          {slide?.heading && <h1>{slide.heading}</h1>}
+          {slide?.description && <p className="hero-text">{slide.description}</p>}
+          <div className="hero-actions">{slide?.button_text && slide.button_url
+            ? <a className="text-link" href={slide.button_url}>{slide.button_text}</a>
+            : <><a className="text-link" href="#shop">Shop the collection</a><a className="text-link" href="#quick-start">See how it works</a></>}
           </div>
-          <button type="button" className="video-toggle" onClick={() => setPlayVideo(!playing)}>
-            {playing ? "Stop video" : "Play video"}
-          </button>
+          {slide?.media_type !== "image" && <button type="button" className="video-toggle" onClick={() => setPlayVideo(!playing)}>{playing ? "Pause video" : "Play video"}</button>}
+          {slides.length > 1 && <div className="hero-carousel-controls" aria-label="Hero carousel controls">
+            <button type="button" aria-label="Previous slide" onClick={() => setActiveSlide(index => (index + slides.length - 1) % slides.length)}>‹</button>
+            <span aria-live="polite">{activeSlide + 1} / {slides.length}</span>
+            <button type="button" aria-label="Next slide" onClick={() => setActiveSlide(index => (index + 1) % slides.length)}>›</button>
+          </div>}
         </div>
       </div>
     </section>
@@ -152,7 +173,7 @@ function Highlights() {
   );
 }
 
-function CollectionSection({ collections }: Pick<HomepageProps, "collections">) {
+function CollectionSection({ collections, homepageContent }: HomepageProps) {
   return (
     <section id="shop" aria-labelledby="shop-title">
       <div className="p-wrap">
@@ -164,7 +185,7 @@ function CollectionSection({ collections }: Pick<HomepageProps, "collections">) 
       </div>
       <div className="collection-rows" id="collection">
         <Suspense fallback={<p className="note p-wrap" role="status">Loading categories…</p>}>
-          <CategoryCollections collections={collections} />
+          <CategoryCollections collections={collections} homepageContent={homepageContent} />
         </Suspense>
       </div>
       <p className="center">
@@ -174,15 +195,17 @@ function CollectionSection({ collections }: Pick<HomepageProps, "collections">) 
   );
 }
 
-function CategoryCollections({ collections }: Pick<HomepageProps, "collections">) {
+function CategoryCollections({ collections, homepageContent }: HomepageProps) {
   const rows = use(collections);
+  const contents = use(homepageContent);
+  const imageBlocks = contents?.filter(item => item.placement === "collection_interlude") ?? [];
   if (!rows?.length) {
     return (
       <>
         <p className="note p-wrap" role="status">
           {rows ? "No categories are available yet." : "Categories are temporarily unavailable."}
         </p>
-        <CollectionImage />
+        <CollectionImages items={imageBlocks} />
       </>
     );
   }
@@ -200,20 +223,26 @@ function CategoryCollections({ collections }: Pick<HomepageProps, "collections">
           </Suspense>
         </div>
       </section>
-      {index === 0 && <CollectionImage />}
+      {index === 0 && <CollectionImages items={imageBlocks} />}
     </Fragment>
   ));
 }
 
-function CollectionImage() {
+function CollectionImages({ items }: { items: HomepageContent[] }) {
+  if (!items.length) return <CollectionImage />;
+  return <>{items.map(content => <CollectionImage key={content.id} content={content} />)}</>;
+}
+
+function CollectionImage({ content }: { content?: HomepageContent }) {
   return (
     <Image
       className="collection-image"
-      src="/Gemini_Generated_Image_s0hpixs0hpixs0hp.jpeg"
-      alt="Illustration of a sleeping orange cat beside four colorful fragrance bottles"
+      src={content?.media_url ?? "/Gemini_Generated_Image_s0hpixs0hpixs0hp.jpeg"}
+      alt={content?.alt_text ?? "Illustration of a sleeping orange cat beside four colorful fragrance bottles"}
       width={2752}
       height={1536}
       sizes="100vw"
+      unoptimized={Boolean(content)}
     />
   );
 }

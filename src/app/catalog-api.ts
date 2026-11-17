@@ -3,6 +3,22 @@ import { cache } from "react";
 
 export type CatalogCategory = { id: number; name: string };
 
+export type HomepageContent = {
+  id: number;
+  content_type: "hero_slide" | "image_block";
+  placement: "hero" | "collection_interlude";
+  position: number;
+  media_type: "video" | "image";
+  media_url: string;
+  poster_url: string | null;
+  alt_text: string | null;
+  heading: string | null;
+  description: string | null;
+  button_text: string | null;
+  button_url: string | null;
+  is_published: boolean;
+};
+
 export function categoryHref(id: number) {
   return `/products?category=${id}`;
 }
@@ -61,6 +77,17 @@ export const getCategories = cache(async (): Promise<CatalogCategory[]> => {
 
   const { data }: { data: CatalogCategory[] } = await response.json();
   return data;
+});
+
+export const getHomepageContent = cache(async (): Promise<HomepageContent[] | null> => {
+  try {
+    const { response } = await requestCatalog("homepage-content");
+    if (!response.ok) return null;
+    const { data }: { data: HomepageContent[] } = await response.json();
+    return data;
+  } catch {
+    return null;
+  }
 });
 
 export async function getProducts(category: string | number | undefined, page: number, search?: string): Promise<CatalogPage> {

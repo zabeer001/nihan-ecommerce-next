@@ -1,5 +1,5 @@
 import Homepage, { type HomepageCollection } from "./homepage";
-import { getCategories, getProducts } from "./catalog-api";
+import { getCategories, getHomepageContent, getProducts } from "./catalog-api";
 
 async function getHomepageCollections(): Promise<HomepageCollection[] | null> {
   const categories = await getCategories().catch(() => null);
@@ -11,5 +11,5 @@ async function getHomepageCollections(): Promise<HomepageCollection[] | null> {
 }
 
 export default function Page() {
-  return <Homepage collections={getHomepageCollections()} />;
+  return <Homepage collections={getHomepageCollections()} homepageContent={getHomepageContent()} />;
 }
