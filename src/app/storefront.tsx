@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { categoryHref, getCategories } from "./catalog-api";
+import { categoryHref, getCategories, getHeaderLogos } from "./catalog-api";
 import { CartLink } from "./cart/cart-link";
 import { StorefrontMenu } from "./storefront-menu";
 import { ThemeToggle } from "./theme-toggle";
@@ -8,6 +8,18 @@ import { ThemeToggle } from "./theme-toggle";
 async function CategoryLinks() {
   const categories = await getCategories().catch(() => []);
   return categories.map(({ id, name }) => <Link key={id} href={categoryHref(id)}>{name}</Link>);
+}
+
+async function HeaderLogos() {
+  const logos = await getHeaderLogos().catch(() => null);
+  return <>
+    {(["before", "after"] as const).map(state => {
+      const src = state === "before" ? logos?.before_hover_url : logos?.after_hover_url;
+      return <span key={state} className={`header-logo header-logo-${state}`} aria-hidden="true">
+        {src ? <img src={src} alt="" className="header-logo-image" /> : <span className="brand-wordmark" />}
+      </span>;
+    })}
+  </>;
 }
 
 export function Header() {
@@ -25,7 +37,7 @@ export function Header() {
       <div className="wrap bar">
         <StorefrontMenu>{links}</StorefrontMenu>
         <Link className="logo" href="/" aria-label="NIHAN home">
-          <span className="brand-wordmark" aria-hidden="true" />
+          <Suspense fallback={<span className="brand-wordmark" aria-hidden="true" />}><HeaderLogos /></Suspense>
         </Link>
         <div className="icons">
           <Suspense><ThemeToggle /></Suspense>

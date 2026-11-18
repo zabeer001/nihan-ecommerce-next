@@ -1,0 +1,23 @@
+.product-reviews { margin-top: clamp(48px, 8vw, 100px); padding-block: 40px; border-top: 1px solid var(--line); }
+.review-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 32px; }
+.review-heading h2 { margin: 4px 0 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.review-eyebrow { color: var(--gold); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; }
+.review-summary { font-size: .9rem; }
+.review-summary strong { font-size: 1.8rem; }
+.reviews-layout { display: grid; gap: 40px; }
+.review-list { min-width: 0; }
+.review-card { padding-block: 24px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.review-card:first-child { padding-top: 0; }
+.review-stars { color: var(--gold); letter-spacing: .15em; font-size: 1.1rem; }
+.review-card h3 { margin: 14px 0 8px; font-size: 1rem; }
+.review-body { white-space: pre-wrap; line-height: 1.7; }
+.review-author { font-size: .8rem; margin-top: 16px; }
+.review-author span, .review-help { opacity: .65; font-size: .8rem; }
+.review-form { align-self: start; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); }
+.review-form h3 { margin-top: 0; }
+.review-form fieldset { display: grid; gap: 18px; padding: 0; margin: 24px 0; border: 0; min-width: 0; }
+.review-form label { display: grid; gap: 8px; font-size: .85rem; }
+.review-form .commerce-input { width: 100%; box-sizing: border-box; }
+.review-form textarea { resize: vertical; }
+.review-pagination { display: flex; justify-content: space-between; gap: 20px; padding-top: 24px; }
+@media (min-width: 800px) { .reviews-layout { grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr); gap: 64px; } }

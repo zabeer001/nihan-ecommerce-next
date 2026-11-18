@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { ProductPrice } from "../../product-price";
 import { addToCart, MAX_QUANTITY } from "../../cart/cart-store";
 import type { ProductPhoto, StorefrontProduct } from "../../catalog-api";
 
@@ -56,7 +57,7 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
             </select>
           </label>
         )}
-        <p aria-live="polite">{prices[selected]}{variant.in_stock && " · In stock"}</p>
+        <p aria-live="polite"><ProductPrice price={variant.price_cents} original={variant.compare_at_price_cents} formattedPrice={prices[selected]} />{variant.in_stock && " · In stock"}</p>
         {variant.in_stock ? <>
           <form className="purchase-controls" onSubmit={event => {
             event.preventDefault();

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { formatPrice, getProduct } from "../../catalog-api";
 import { ProductGallery } from "./product-gallery";
+import { ProductReviews } from "./product-reviews";
 import { StorefrontPage } from "../../storefront-page";
 
 async function ProductDetails({ params }: PageProps<"/products/[slug]">) {
@@ -11,7 +12,7 @@ async function ProductDetails({ params }: PageProps<"/products/[slug]">) {
   if (product === undefined) return <p role="status">Product details are temporarily unavailable.</p>;
   if (!product) notFound();
 
-  return <ProductGallery product={product} prices={product.variants.map(variant => formatPrice(variant.price_cents))} />;
+  return <><ProductGallery product={product} prices={product.variants.map(variant => formatPrice(variant.price_cents))} /><ProductReviews key={slug} slug={slug} /></>;
 }
 
 export default function ProductPage(props: PageProps<"/products/[slug]">) {

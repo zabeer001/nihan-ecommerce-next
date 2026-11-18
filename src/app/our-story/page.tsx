@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function OurStoryPage() {
   return (
-    <StorefrontPage>
+    <StorefrontPage className="our-story-page">
       <section className="split" aria-labelledby="story-title">
         <div className="wrap">
           <div className="head">

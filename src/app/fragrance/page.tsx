@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { getCategories } from "../catalog-api";
 import type { Metadata } from "next";
 import { ProductGrid } from "../catalog";
 import { ScentGrid } from "../scent-grid";
@@ -8,6 +10,12 @@ export const metadata: Metadata = {
   description: "Explore all four NIHAN car fragrances and browse the refill collection.",
 };
 
+async function FragranceContent() {
+  const categories = await getCategories().catch(() => []);
+  const category = categories.find(item => item.name.toLowerCase() === "fragrance");
+  return <ScentGrid cards={category?.content_cards ?? null} />;
+}
+
 export default function FragrancePage({ searchParams }: PageProps<"/fragrance">) {
   return (
     <StorefrontPage>
@@ -16,7 +24,7 @@ export default function FragrancePage({ searchParams }: PageProps<"/fragrance">)
           <div className="head">
             <h1 className="category-title" id="fragrance-title">Fragrance</h1>
           </div>
-          <ScentGrid />
+          <Suspense><FragranceContent /></Suspense>
           <div className="category-refills" id="refills">
             <h2>50 ml refills</h2>
             <ProductGrid category="fragrance" searchParams={searchParams} />
