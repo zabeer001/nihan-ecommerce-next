@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { CatalogPage } from "./catalog-api";
 import { ProductPrice } from "./product-price";
+import { AddToCartButton, VariationSelect } from "./product-controls";
 import { addToCart } from "./cart/cart-store";
 
 export function ProductCard({
@@ -34,14 +35,14 @@ export function ProductCard({
         </Link>
         <div className="tile-cart-overlay">
           {variants.length > 1 && <label className="tile-variant-label"><span className="visually-hidden">Choose a variant for {name}</span>
-            <select aria-label={`Variant for ${name}`} value={selected} onChange={event => { setSelected(Number(event.target.value)); setFeedback(null); }}>
+            <VariationSelect aria-label={`Variant for ${name}`} value={selected} onChange={event => { setSelected(Number(event.target.value)); setFeedback(null); }}>
               {variants.map((option, index) => <option key={option.id} value={index} disabled={!option.in_stock}>{option.label}{!option.in_stock ? " · Sold out" : ""}</option>)}
-            </select>
+            </VariationSelect>
           </label>}
-          <button className="tile-cart-button" type="button" disabled={!variant?.in_stock} onClick={add}
+          <AddToCartButton className="tile-cart-button" type="button" disabled={!variant?.in_stock} onClick={add}
             aria-label={variant?.in_stock ? `Add ${name}${variants.length > 1 ? ` (${variant.label})` : ""} to cart` : `${name} is sold out`}>
             {!variant?.in_stock ? "Sold out" : feedback === "added" ? "Added ✓" : "Add to cart"}
-          </button>
+          </AddToCartButton>
         </div>
       </div>
       <Link href={href}>

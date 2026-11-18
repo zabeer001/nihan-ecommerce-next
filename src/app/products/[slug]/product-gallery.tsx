@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ProductPrice } from "../../product-price";
+import { AddToCartButton, VariationSelect } from "../../product-controls";
 import { addToCart, MAX_QUANTITY } from "../../cart/cart-store";
 import type { ProductPhoto, StorefrontProduct } from "../../catalog-api";
 
@@ -46,7 +47,7 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
         {product.has_variants && (
           <label>
             Variant
-            <select value={selected} onChange={event => {
+            <VariationSelect value={selected} onChange={event => {
               setSelected(Number(event.target.value));
               setQuantity("1");
               setFeedback(null);
@@ -54,7 +55,7 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
               {product.variants.map(({ id, label, in_stock }, index) => (
                 <option key={id} value={index}>{label}{in_stock ? "" : " (out of stock)"}</option>
               ))}
-            </select>
+            </VariationSelect>
           </label>
         )}
         <p aria-live="polite"><ProductPrice price={variant.price_cents} original={variant.compare_at_price_cents} formattedPrice={prices[selected]} />{variant.in_stock && " · In stock"}</p>
@@ -74,7 +75,7 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
                   setFeedback(null);
                 }} />
             </label>
-            <button className="btn fill" type="submit">Add to cart</button>
+            <AddToCartButton type="submit" />
           </form>
           <p role="status">
             {feedback === "added" && <>Added to cart. <Link className="commerce-secondary-link" href="/cart">View cart</Link></>}

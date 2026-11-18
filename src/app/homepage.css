@@ -115,6 +115,7 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   padding-block: clamp(56px, 7vw, 104px);
 }
 
+.home-page #shop,
 .home-page .content-band:not(.alt),
 .home-page .category-section:not(.category-alt) {
   --gold: #0e2a20;
@@ -304,25 +305,6 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
 
 .home-page .category-alt .row-heading .text-link {
   color: var(--gold);
-}
-
-.home-page .tile-cart-button {
-  border-color: #c2a06b;
-  background: #0e2a20;
-  color: #c2a06b;
-}
-
-.home-page .tile-cart-button:not(:disabled):hover {
-  background: #18382c;
-  color: #c2a06b;
-}
-
-.home-page .tile-cart-button:disabled:hover {
-  background: #0e2a20;
-}
-
-.home-page .tile-cart-button:focus-visible {
-  outline-color: #c2a06b;
 }
 
 .home-page .collection-image {

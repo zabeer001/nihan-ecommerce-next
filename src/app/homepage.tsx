@@ -227,7 +227,7 @@ function CategoryCollections({ collections, homepageContent }: Omit<HomepageProp
 
   return rows.map(({ id, name, products }, index) => (
     <Fragment key={id}>
-      <section className={`category-section${index % 4 < 2 ? " category-alt" : ""}`} aria-labelledby={`collection-${id}`}>
+      <section className={`category-section${index > 0 && index % 4 < 2 ? " category-alt" : ""}`} aria-labelledby={`collection-${id}`}>
         <div className="p-wrap">
           <div className="row-heading">
             <h3 id={`collection-${id}`}>{name}</h3>

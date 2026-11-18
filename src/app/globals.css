@@ -598,13 +598,6 @@ nav a:hover {
   max-width: 24rem;
 }
 
-.catalog-detail-info select {
-  padding: 10px;
-  color: inherit;
-  background: var(--bg3);
-  border: 1px solid var(--line);
-}
-
 .catalog-description {
   white-space: pre-line;
 }
@@ -1193,12 +1186,38 @@ button:disabled, input:disabled {
 
 .tile .tile-image-link { position: absolute; inset: 0; }
 .tile-cart-overlay { position: absolute; z-index: 1; inset: auto 12px 12px; display: grid; gap: 6px; }
-.tile-cart-button, .tile-variant-label select { width: 100%; min-height: 42px; border: 1px solid rgb(20 24 21 / 12%); border-radius: 0; background: #fff; color: #17201b; font: inherit; }
-.tile-cart-button { padding: 12px 8px; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
-.tile-variant-label select { padding: 8px; font-size: .75rem; }
-.tile-cart-button:hover { background: #e9ede9; }
-.tile-cart-button:disabled { opacity: .7; cursor: default; }
-.tile-cart-button:focus-visible, .tile-variant-label select:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.product-control {
+  appearance: none;
+  min-height: 44px;
+  padding: 12px 24px;
+  border: 1px solid #c2a06b;
+  border-radius: 0;
+  background-color: #c2a06b;
+  color: #0e2a20;
+  color-scheme: light;
+  font: 600 .75rem var(--sans);
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.product-control:not(:disabled):hover {
+  background-color: #d2b481;
+  border-color: #0e2a20;
+}
+.product-control:focus-visible {
+  outline: 2px solid #c2a06b;
+  outline-offset: 3px;
+}
+.product-control:disabled { opacity: .7; cursor: default; }
+.tile-cart-button, .variation-select { width: 100%; }
+.cart-add-button { text-transform: uppercase; }
+.variation-select {
+  padding: 12px 40px 12px 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%230e2a20' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+.variation-select option { background: #c2a06b; color: #0e2a20; }
 .tile-cart-feedback { margin-top: 6px; font-size: .75rem; color: var(--mute); }
 .tile .tile-cart-feedback a { display: inline; text-decoration: underline; }
 @media (hover: hover) and (pointer: fine) {
