@@ -240,6 +240,32 @@ nav a:hover {
   mask: url("/Monochrome%20Tiger%20Logo%20with%20NIHAN%20Typography.png") center / 126% auto no-repeat luminance;
 }
 
+.bar .logo {
+  display: grid;
+}
+
+.header-logo {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-logo-before {
+  opacity: var(--header-logo-before, 0);
+}
+
+.header-logo-after {
+  opacity: calc(1 - var(--header-logo-before, 0));
+}
+
+.header-logo-image {
+  display: block;
+  width: clamp(90px, 15vw, 174px);
+  height: calc(var(--wordmark-height) * 2);
+  object-fit: contain;
+}
+
 .bar .icons {
   grid-column: 3;
   grid-row: 1;
@@ -486,7 +512,7 @@ nav a:hover {
 
 @media (min-width: 900px) {
   .scents {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--card-count, 4), minmax(0, 1fr));
   }
 
   .scent {
@@ -590,6 +616,27 @@ nav a:hover {
 }
 
 /* story */
+body:has(> .our-story-page:not([style*="display: none"])) {
+  color-scheme: dark;
+  --bg: #0e2a20;
+  --bg2: #0e2a20;
+  --bg3: #18382c;
+  --header-bg: #0e2a20;
+  --gold: #c2a06b;
+  --ivory: #c2a06b;
+  --mute: #b8c4bd;
+  --body-copy: #e3e8e4;
+  --line: rgb(244 241 233 / 18%);
+  --wordmark-ink: #c2a06b;
+  --button-text: #0e2a20;
+  background: var(--bg);
+  color: var(--gold);
+}
+
+.our-story-page {
+  background: #0e2a20;
+}
+
 .story {
   display: grid;
   gap: 40px;
@@ -620,11 +667,16 @@ nav a:hover {
 }
 
 footer {
-  background: var(--bg2);
+  color-scheme: dark;
+  --gold: #c2a06b;
+  --ivory: #f4f1e9;
+  --mute: #c2a06b;
+  --line: rgb(194 160 107 / 24%);
+  background: #0e2a20;
   padding: 70px 0 40px;
   border-top: 1px solid var(--line);
   font-size: .82rem;
-  color: var(--mute);
+  color: var(--gold);
 }
 
 .fg {
@@ -1125,3 +1177,32 @@ button:disabled, input:disabled {
     transform: translateY(2px);
   }
 }
+
+.product-price {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .65em;
+}
+
+.product-price del {
+  opacity: .6;
+  font-size: .85em;
+  text-decoration-thickness: 1px;
+}
+
+.tile .tile-image-link { position: absolute; inset: 0; }
+.tile-cart-overlay { position: absolute; z-index: 1; inset: auto 12px 12px; display: grid; gap: 6px; }
+.tile-cart-button, .tile-variant-label select { width: 100%; min-height: 42px; border: 1px solid rgb(20 24 21 / 12%); border-radius: 0; background: #fff; color: #17201b; font: inherit; }
+.tile-cart-button { padding: 12px 8px; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.tile-variant-label select { padding: 8px; font-size: .75rem; }
+.tile-cart-button:hover { background: #e9ede9; }
+.tile-cart-button:disabled { opacity: .7; cursor: default; }
+.tile-cart-button:focus-visible, .tile-variant-label select:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.tile-cart-feedback { margin-top: 6px; font-size: .75rem; color: var(--mute); }
+.tile .tile-cart-feedback a { display: inline; text-decoration: underline; }
+@media (hover: hover) and (pointer: fine) {
+  .tile-cart-overlay { opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease, visibility .2s; }
+  .tile-art:hover .tile-cart-overlay, .tile-art:focus-within .tile-cart-overlay { opacity: 1; visibility: visible; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .tile-cart-overlay { transition: none; } }

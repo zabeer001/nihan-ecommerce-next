@@ -1,23 +1,49 @@
 import { connection } from "next/server";
 import { cache } from "react";
 
-export type CatalogCategory = { id: number; name: string };
+export type CategoryContentCard = { label: string; title: string; description: string; color: string };
+export type CategoryUsageGuide = {
+  heading: string | null;
+  button_text: string | null;
+  button_url: string | null;
+  steps: { title: string; description: string }[];
+};
+export type CatalogCategory = { id: number; name: string; content_cards: CategoryContentCard[] | null; usage_guide: CategoryUsageGuide | null };
 
 export type HomepageContent = {
+  alt_text: string | null;
   id: number;
-  content_type: "hero_slide" | "image_block";
   placement: "hero" | "collection_interlude";
   position: number;
   media_type: "video" | "image";
   media_url: string;
   poster_url: string | null;
-  alt_text: string | null;
   heading: string | null;
   description: string | null;
   button_text: string | null;
   button_url: string | null;
-  is_published: boolean;
 };
+
+export const getHomepageContent = cache(async (): Promise<HomepageContent[]> => {
+  const { response, url } = await requestCatalog("homepage-content");
+  if (!response.ok) return [];
+  const { data }: { data: HomepageContent[] } = await response.json();
+  return data.map(item => ({ ...item, media_url: new URL(item.media_url, url).href,
+    poster_url: item.poster_url ? new URL(item.poster_url, url).href : null }));
+});
+
+export type HomepageReview = {
+  id: number; author_name: string; rating: number; title: string | null; body: string;
+  product_name: string; product_slug: string;
+};
+
+export type HomepageReviewPage = { data: HomepageReview[]; current_page: number; last_page: number };
+
+export const getHomepageReviews = cache(async (): Promise<HomepageReviewPage> => {
+  const { response } = await requestCatalog("reviews");
+  if (!response.ok) throw new Error("Reviews request failed.");
+  return response.json();
+});
 
 export function categoryHref(id: number) {
   return `/products?category=${id}`;
@@ -35,13 +61,16 @@ export type StorefrontProduct = {
     id: number;
     label: string;
     price_cents: number;
+    compare_at_price_cents: number | null;
     in_stock: boolean;
     images: ProductPhoto[];
   }[];
 };
 
 type ProductSummary = Pick<StorefrontProduct, "slug" | "name"> & {
+  variants: Omit<StorefrontProduct["variants"][number], "images">[];
   price_cents: number;
+  compare_at_price_cents: number | null;
   image: ProductPhoto | null;
 };
 
@@ -79,17 +108,6 @@ export const getCategories = cache(async (): Promise<CatalogCategory[]> => {
   return data;
 });
 
-export const getHomepageContent = cache(async (): Promise<HomepageContent[] | null> => {
-  try {
-    const { response } = await requestCatalog("homepage-content");
-    if (!response.ok) return null;
-    const { data }: { data: HomepageContent[] } = await response.json();
-    return data;
-  } catch {
-    return null;
-  }
-});
-
 export async function getProducts(category: string | number | undefined, page: number, search?: string): Promise<CatalogPage> {
   const params = new URLSearchParams({ page: String(page) });
   if (typeof category === "number") params.set("category_id", String(category));
@@ -123,3 +141,15 @@ export async function getProduct(slug: string): Promise<StorefrontProduct | null
     })),
   };
 }
+
+export type HeaderLogos = { before_hover_url: string | null; after_hover_url: string | null };
+
+export const getHeaderLogos = cache(async (): Promise<HeaderLogos> => {
+  const { response, url } = await requestCatalog("header-logos");
+  if (!response.ok) throw new Error("Header logos request failed.");
+  const { data }: { data: HeaderLogos } = await response.json();
+  return {
+    before_hover_url: data.before_hover_url ? new URL(data.before_hover_url, url).href : null,
+    after_hover_url: data.after_hover_url ? new URL(data.after_hover_url, url).href : null,
+  };
+});

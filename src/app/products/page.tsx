@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ScentGrid } from "../scent-grid";
 import { ProductGrid } from "../catalog";
 import { getCategories } from "../catalog-api";
 import { StorefrontPage } from "../storefront-page";
@@ -27,6 +28,7 @@ async function Shop({ searchParams }: PageProps<"/products">) {
           ))}
         </nav>
       )}
+      {category && <ScentGrid cards={category.content_cards} />}
       {params.category !== undefined && !category ? (
         <p role="status">{categories ? "This category is unavailable." : "Categories are temporarily unavailable."}</p>
       ) : (
