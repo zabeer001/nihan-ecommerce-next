@@ -5,6 +5,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "NIHAN – Car Fragrance",
   description: "Explore the NIHAN AI Car Aroma Diffuser and refillable car fragrances. Delivering across Bangladesh.",
+  verification: {
+    google: "02FRVzx5AfvYrAPdlvIKxOh5XneV0BXojF1QKzY6TFY",
+  },
 };
 
 export const viewport: Viewport = {

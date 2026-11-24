@@ -146,6 +146,7 @@ header {
   z-index: 20;
   background: var(--header-bg);
   border-bottom: 1px solid var(--line);
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 
 .logo {
@@ -242,10 +243,13 @@ nav a:hover {
 
 .bar .logo {
   display: grid;
+  width: clamp(90px, 15vw, 174px);
 }
 
 .header-logo {
   grid-area: 1 / 1;
+  min-height: calc(var(--wordmark-height) * 2);
+  transition: opacity 180ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1225,3 +1229,7 @@ button:disabled, input:disabled {
   .tile-art:hover .tile-cart-overlay, .tile-art:focus-within .tile-cart-overlay { opacity: 1; visibility: visible; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) { .tile-cart-overlay { transition: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  header, .header-logo { transition: none; }
+}

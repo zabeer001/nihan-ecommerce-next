@@ -66,7 +66,9 @@ export default function Homepage({ collections, homepageContent, reviews }: Home
 
   return (
     <main className="home-page" ref={pageRef}>
-      <Suspense fallback={<section className="hero" />}><HeroCarousel homepageContent={homepageContent} /></Suspense>
+      <section className="hero" aria-label="NIHAN diffuser introduction">
+        <Suspense fallback={null}><HeroCarousel homepageContent={homepageContent} /></Suspense>
+      </section>
       <CollectionSection collections={collections} homepageContent={homepageContent} />
       <Highlights />
       <Suspense><CategoryUsageGuides collections={collections} /></Suspense>
@@ -100,7 +102,7 @@ function HeroCarousel({ homepageContent }: Pick<HomepageProps, "homepageContent"
     return () => window.clearTimeout(timer);
   }, [index, slides.length, slide?.media_type]);
 
-  return <section className="hero" aria-label="NIHAN diffuser introduction">
+  return <>
     <div className="hero-media" aria-hidden="true">
       {slide?.media_type === "video" ? <HeroVideo key={slide.id} src={slide.media_url} poster={slide.poster_url} loop={slides.length === 1} onEnded={next} onProgress={progress => {
         if (progressRef.current) progressRef.current.style.transform = `scaleX(${progress})`;
@@ -122,7 +124,7 @@ function HeroCarousel({ homepageContent }: Pick<HomepageProps, "homepageContent"
         /></span>
       </button>)}
     </div>}
-  </section>;
+  </>;
 }
 
 function HeroVideo({ src, poster, loop, onEnded, onProgress, className, label }: { src: string; poster: string | null; loop: boolean; onEnded?: () => void; onProgress?: (progress: number) => void; className?: string; label?: string }) {
@@ -245,9 +247,40 @@ function CategoryCollections({ collections, homepageContent }: Omit<HomepageProp
 
 function CollectionMedia({ homepageContent }: Pick<HomepageProps, "homepageContent">) {
   const files = use(homepageContent).filter(item => item.placement === "collection_interlude");
-  return files.map(item => item.media_type === "video"
-    ? <HeroVideo key={item.id} className="collection-image" src={item.media_url} poster={item.poster_url} loop label={item.alt_text || undefined} />
-    : <Image key={item.id} className="collection-image" src={item.media_url} alt={item.alt_text || ""} width={2752} height={1536} sizes="100vw" unoptimized />);
+  const [index, setIndex] = useState(0);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const current = index % files.length;
+  const item = files[current];
+  const next = () => setIndex(position => (position + 1) % files.length);
+
+  useEffect(() => {
+    if (files.length < 2 || item?.media_type !== "image") return;
+    const timer = window.setTimeout(() => setIndex(position => (position + 1) % files.length), 7000);
+    return () => window.clearTimeout(timer);
+  }, [index, files.length, item?.media_type]);
+
+  if (!item) return null;
+
+  return <section className="collection-carousel" aria-label="Collection content" aria-roledescription="carousel">
+    <div role="group" aria-roledescription="slide" aria-label={`${current + 1} of ${files.length}`}>
+      {item.media_type === "video"
+        ? <HeroVideo key={item.id} className="collection-image" src={item.media_url} poster={item.poster_url}
+            loop={files.length === 1} label={item.alt_text || undefined} onEnded={next} onProgress={progress => {
+              if (progressRef.current) progressRef.current.style.transform = `scaleX(${progress})`;
+            }} />
+        : <Image key={item.id} className="collection-image" src={item.media_url} alt={item.alt_text || ""} width={2752} height={1536} sizes="100vw" unoptimized />}
+    </div>
+    {files.length > 1 && <>
+      <div className="hero-carousel-controls" role="group" aria-label="Choose a collection slide">
+        {files.map((file, position) => <button key={`${index}-${file.id}`} type="button" className="hero-carousel-line"
+          aria-label={`Go to collection slide ${position + 1}`} aria-current={position === current ? "true" : undefined}
+          onClick={() => setIndex(position)}>
+          <span className="hero-carousel-track"><span ref={position === current ? progressRef : undefined}
+            className={`hero-carousel-fill${position === current && file.media_type === "image" ? " hero-carousel-fill-timed" : ""}`} /></span>
+        </button>)}
+      </div>
+    </>}
+  </section>;
 }
 
 function CollectionProducts({ products }: Pick<HomepageCollection, "products">) {

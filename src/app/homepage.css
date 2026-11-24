@@ -43,6 +43,7 @@ body:has(> .home-page:not([style*="display: none"], [data-past-hero])) > header 
     inset: 0 0 -36px;
     background: linear-gradient(to bottom, rgb(0 0 0 / 60%) calc(100% - 36px), transparent);
     opacity: var(--header-overlay);
+    transition: opacity 180ms ease;
     pointer-events: none;
   }
 
@@ -313,7 +314,8 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   height: auto;
 }
 
-.home-page .collection-image + .category-alt {
+.home-page .collection-image + .category-alt,
+.home-page .collection-carousel + .category-alt {
   margin-top: calc(-1 * clamp(28px, 5vw, 64px));
 }
 
@@ -561,6 +563,20 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   from { opacity: 0; }
 }
 
+.home-page .collection-carousel {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+.home-page .collection-carousel .collection-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2752 / 1536;
+  object-fit: contain;
+}
+
 .home-page .hero-carousel-controls {
   position: absolute;
   z-index: 1;
@@ -630,4 +646,8 @@ body:has(> .home-page:not([style*="display: none"])) > footer {
   .home-page .hero-carousel-track { transition: none; }
   .home-page .hero-carousel-fill { transition: none; }
   .home-page .hero-carousel-fill-timed { animation: none; transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(> .home-page) > header::before { transition: none; }
 }
