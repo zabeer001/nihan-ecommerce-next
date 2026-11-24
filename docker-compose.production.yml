@@ -1,0 +1,23 @@
+name: nihan_storefront
+
+services:
+  storefront:
+    build:
+      context: .
+      args:
+        NIHAN_HERO_VIDEO_ID: ${NIHAN_HERO_VIDEO_ID:-}
+    image: nihan-ecommerce-next:latest
+    container_name: nihan-ecommerce-next
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PORT:-1008}:3000"
+    environment:
+      NIHAN_CATALOG_API_URL: ${NIHAN_CATALOG_API_URL:?Set NIHAN_CATALOG_API_URL in .env}
+      NIHAN_LARAVEL_PUBLIC_URL: ${NIHAN_LARAVEL_PUBLIC_URL:?Set NIHAN_LARAVEL_PUBLIC_URL in .env}
+      NIHAN_HERO_VIDEO_ID: ${NIHAN_HERO_VIDEO_ID:-}
+    networks: [backend]
+
+networks:
+  backend:
+    external: true
+    name: nihan_ecommerce_app

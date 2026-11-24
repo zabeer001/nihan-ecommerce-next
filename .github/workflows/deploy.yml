@@ -60,12 +60,12 @@ jobs:
             exit 1
           fi
 
-          docker compose build nihan-web
+          docker compose -f docker-compose.production.yml build storefront
 
-          if ! docker compose up -d --no-build --force-recreate --wait --wait-timeout 90 nihan-web; then
-            docker compose logs --tail 100 nihan-web >&2
+          if ! docker compose -f docker-compose.production.yml up -d --no-build --force-recreate --wait --wait-timeout 90 storefront; then
+            docker compose -f docker-compose.production.yml logs --tail 100 storefront >&2
             exit 1
           fi
 
-          docker compose ps nihan-web
+          docker compose -f docker-compose.production.yml ps storefront
           REMOTE_SCRIPT
