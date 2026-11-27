@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { ecommerceEvent } from "../data-layer";
 
 export const MAX_CART_LINES = 100;
 export const MAX_QUANTITY = 1_000_000;
@@ -11,6 +12,7 @@ export type CartLine = {
   name: string;
   label: string;
   slug: string;
+  price_cents?: number;
 };
 
 const storageKey = "nihan-cart-v1";
@@ -71,6 +73,12 @@ export function useCart() {
   return useSyncExternalStore(subscribe, snapshot, () => empty);
 }
 
+function trackChange(event: string, line: CartLine, quantity: number) {
+  if (!Number.isSafeInteger(line.price_cents) || line.price_cents! < 0) return;
+  ecommerceEvent(event, [{ item_id: String(line.variant_id), item_name: line.name,
+    item_variant: line.label || undefined, price: line.price_cents! / 100, quantity }]);
+}
+
 export function addToCart(line: CartLine) {
   if (!isCartLine(line)) return false;
   const lines = snapshot();
@@ -78,11 +86,12 @@ export function addToCart(line: CartLine) {
   if (existing) {
     const quantity = existing.quantity + line.quantity;
     if (quantity > MAX_QUANTITY) return false;
-    setCartQuantity(line.variant_id, quantity);
+    save(lines.map(item => item.variant_id === line.variant_id ? { ...line, quantity } : item));
   } else {
     if (lines.length >= MAX_CART_LINES) return false;
     save([...lines, line]);
   }
+  trackChange("add_to_cart", line, line.quantity);
   return true;
 }
 
@@ -90,6 +99,8 @@ export function setCartQuantity(variantId: number, quantity: number) {
   if (!Number.isInteger(quantity) || quantity < 0 || quantity > MAX_QUANTITY) return;
   save(snapshot().flatMap(line => {
     if (line.variant_id !== variantId) return [line];
+    const delta = quantity - line.quantity;
+    if (delta) trackChange(delta > 0 ? "add_to_cart" : "remove_from_cart", line, Math.abs(delta));
     return quantity > 0 ? [{ ...line, quantity }] : [];
   }));
 }

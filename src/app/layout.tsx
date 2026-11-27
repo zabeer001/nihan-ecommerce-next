@@ -1,14 +1,32 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
+import { connection } from "next/server";
+import { getStorefrontSettings } from "./catalog-api";
 import { Footer, Header } from "./storefront";
 import "./globals.css";
+import { ProductPixel } from "./products/[slug]/product-pixel";
+import { PageTracking } from "./ecommerce-tracking";
+import { TagManager } from "./tag-manager";
 
-export const metadata: Metadata = {
-  title: "NIHAN – Car Fragrance",
-  description: "Explore the NIHAN AI Car Aroma Diffuser and refillable car fragrances. Delivering across Bangladesh.",
-  verification: {
-    google: "02FRVzx5AfvYrAPdlvIKxOh5XneV0BXojF1QKzY6TFY",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getStorefrontSettings().catch(() => null);
+  return {
+    title: settings?.meta_title || "NIHAN – Car Fragrance",
+    description: settings?.meta_description || undefined,
+    verification: settings?.google_site_verification
+      ? { google: settings.google_site_verification } : undefined,
+  };
+}
+
+async function StorefrontPixel() {
+  const settings = await getStorefrontSettings().catch(() => null);
+  return <><TagManager containerId={settings?.gtm_container_id} /><ProductPixel pixelId={settings?.meta_pixel_id || null} /></>;
+}
+
+async function RuntimeMetadata() {
+  await connection();
+  return null;
+}
 
 export const viewport: Viewport = {
   viewportFit: "cover",
@@ -30,6 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         ` }} />
       </head>
       <body>
+        <Suspense><PageTracking /></Suspense>
+        <Suspense><StorefrontPixel /></Suspense>
+        <Suspense><RuntimeMetadata /></Suspense>
         <Header />
         {children}
         <Footer />

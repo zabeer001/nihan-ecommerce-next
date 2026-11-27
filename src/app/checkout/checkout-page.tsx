@@ -8,6 +8,9 @@ import { OrderTotals } from "../cart/order-totals";
 import { formatPrice } from "../money";
 import { saveOrder, trackingHref } from "../my-orders/saved-orders";
 
+import { QuoteTracking, quoteItems } from "../ecommerce-tracking";
+import { purchaseEvent, type EcommerceItem } from "../data-layer";
+
 const attemptKey = "nihan-cod-attempt-v1";
 const contactFields = ["customer_name", "phone", "email", "address"] as const;
 
@@ -15,6 +18,7 @@ type Attempt = {
   submission_key: string;
   tracking_secret: string;
   items: LineInput[];
+  analytics_items?: EcommerceItem[];
 };
 
 type OrderPayload = {
@@ -48,6 +52,7 @@ function saveAttempt(attempt?: Attempt) {
 }
 
 function confirmOrder(attempt: Attempt, receipt: Receipt) {
+  purchaseEvent(receipt.reference, attempt.analytics_items || [], receipt.subtotal_cents, receipt.delivery_cents);
   saveOrder(receipt, attempt.tracking_secret);
   saveAttempt();
   removePurchasedItems(attempt.items);
@@ -171,13 +176,13 @@ export function CheckoutPage() {
           return;
         }
 
-        const attempt = previous ?? {
+        const attempt: Attempt = { ...(previous ?? {
           submission_key: crypto.randomUUID(),
           tracking_secret: Array.from(
             crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, "0"),
           ).join(""),
           items: items.map(({ variant_id, quantity }) => ({ variant_id, quantity })),
-        };
+        }), analytics_items: quoteItems(quote) };
         payload = {
           submission_key: attempt.submission_key,
           tracking_secret: attempt.tracking_secret,
@@ -249,6 +254,7 @@ export function CheckoutPage() {
 
   return (
     <form className="commerce-grid" onSubmit={submit}>
+      <QuoteTracking event="begin_checkout" quote={quote} />
       <div className="commerce-panel">
         <Link className="commerce-secondary-link" href="/cart">Back to cart</Link>
         <h2>Delivery details</h2>

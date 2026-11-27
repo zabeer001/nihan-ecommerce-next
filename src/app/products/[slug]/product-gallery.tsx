@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ecommerceEvent } from "../../data-layer";
 import { ProductPrice } from "../../product-price";
 import { AddToCartButton, VariationSelect } from "../../product-controls";
 import { addToCart, MAX_QUANTITY } from "../../cart/cart-store";
@@ -36,6 +37,16 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
   const [quantity, setQuantity] = useState("1");
   const [feedback, setFeedback] = useState<"added" | "limit" | null>(null);
   const variant = product.variants[selected];
+  const viewed = useRef("");
+  useEffect(() => {
+    if (!variant) return;
+    const key = `${product.slug}:${variant.id}`;
+    if (viewed.current === key) return;
+    viewed.current = key;
+    ecommerceEvent("view_item", [{ item_id: String(variant.id), item_name: product.name,
+      item_variant: product.has_variants ? variant.label : undefined, price: variant.price_cents / 100, quantity: 1 }]);
+  }, [product.slug, product.name, product.has_variants, variant]);
+
   const photos = [...variant.images, ...product.images];
 
   return (
@@ -63,7 +74,7 @@ export function ProductGallery({ product, prices }: { product: StorefrontProduct
           <form className="purchase-controls" onSubmit={event => {
             event.preventDefault();
             const added = addToCart({
-              variant_id: variant.id, quantity: Number(quantity), slug: product.slug,
+              variant_id: variant.id, price_cents: variant.price_cents, quantity: Number(quantity), slug: product.slug,
               name: product.name, label: product.has_variants ? variant.label : "",
             });
             setFeedback(added ? "added" : "limit");

@@ -56,6 +56,9 @@ export type StorefrontProduct = {
   name: string;
   description: string | null;
   images: ProductPhoto[];
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_pixel_id: string | null;
   has_variants: boolean;
   variants: {
     id: number;
@@ -127,7 +130,7 @@ export async function getProducts(category: string | number | undefined, page: n
   };
 }
 
-export async function getProduct(slug: string): Promise<StorefrontProduct | null> {
+export const getProduct = cache(async (slug: string): Promise<StorefrontProduct | null> => {
   const { response, url } = await requestCatalog(`products/${encodeURIComponent(slug)}`);
   if (response.status === 404) return null;
 
@@ -140,7 +143,22 @@ export async function getProduct(slug: string): Promise<StorefrontProduct | null
       images: variant.images.map(photo => resolvePhoto(photo, url)),
     })),
   };
-}
+});
+
+export type StorefrontSettings = {
+  gtm_container_id: string | null;
+  meta_pixel_id: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  google_site_verification: string | null;
+};
+
+export const getStorefrontSettings = cache(async (): Promise<StorefrontSettings> => {
+  const { response } = await requestCatalog("settings");
+  if (!response.ok) throw new Error("Storefront settings request failed.");
+  const { data }: { data: StorefrontSettings } = await response.json();
+  return data;
+});
 
 export type HeaderLogos = { before_hover_url: string | null; after_hover_url: string | null };
 

@@ -5,6 +5,7 @@ services:
     build:
       context: .
       args:
+        NEXT_PUBLIC_GTM_ID: ${NEXT_PUBLIC_GTM_ID:-}
         NIHAN_HERO_VIDEO_ID: ${NIHAN_HERO_VIDEO_ID:-}
     image: nihan-ecommerce-next:latest
     container_name: nihan-ecommerce-next

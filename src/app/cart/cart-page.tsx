@@ -6,6 +6,7 @@ import { useState } from "react";
 import { formatPrice } from "../money";
 import { MAX_QUANTITY, setCartQuantity, useCart } from "./cart-store";
 import { lineIssue, useQuote } from "./commerce-api";
+import { QuoteTracking } from "../ecommerce-tracking";
 import { OrderTotals } from "./order-totals";
 
 function Quantity({ id, quantity, name }: { id: number; quantity: number; name: string }) {
@@ -33,6 +34,7 @@ export function CartPage() {
 
   return (
     <div className="commerce-grid">
+      <QuoteTracking event="view_cart" quote={quote} />
       <ul className="commerce-panel cart-lines">
         {cart.map(item => {
           const line = quote?.items.find(line => line.variant_id === item.variant_id);

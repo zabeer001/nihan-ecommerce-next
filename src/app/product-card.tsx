@@ -23,7 +23,7 @@ export function ProductCard({
 
   function add() {
     if (!variant?.in_stock) return;
-    const added = addToCart({ variant_id: variant.id, quantity: 1, slug, name, label: variants.length > 1 ? variant.label : "" });
+    const added = addToCart({ variant_id: variant.id, price_cents: variant.price_cents, quantity: 1, slug, name, label: variants.length > 1 ? variant.label : "" });
     setFeedback(added ? "added" : "limit");
   }
 
